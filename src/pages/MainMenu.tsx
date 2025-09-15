@@ -2,8 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Users, GraduationCap, Settings, Bell, LogOut } from "lucide-react";
+import { MessageCircle, Users, GraduationCap, Settings, Bell, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ const MainMenu = () => {
   };
 
   const handleLogout = () => {
+    try {
+      localStorage.removeItem('userCollege');
+      // Optionally clear selected college context
+      // localStorage.removeItem('selectedCollege');
+    } catch {}
     navigate("/auth");
   };
 
@@ -37,16 +43,22 @@ const MainMenu = () => {
               <Button variant="ghost" size="icon">
                 <Bell className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <Settings className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="w-5 h-5" />
-              </Button>
-              <Avatar>
-                <AvatarImage src="" />
-                <AvatarFallback>ST</AvatarFallback>
-              </Avatar>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <User className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => navigate('/account')}>Account</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

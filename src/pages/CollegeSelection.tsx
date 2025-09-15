@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, GraduationCap, MapPin, Users } from "lucide-react";
+import { Search, GraduationCap, MapPin, Users, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const collegeCategories = [
   {
@@ -66,6 +67,7 @@ const collegeCategories = [
 
 const CollegeSelection = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const filteredColleges = collegeCategories
     .map((category) => ({
@@ -84,7 +86,16 @@ const CollegeSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="min-h-screen bg-background p-4 relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute left-4 top-4"
+        onClick={() => navigate('/main-menu')}
+        aria-label="Back"
+      >
+        <ArrowLeft className="w-5 h-5" />
+      </Button>
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">

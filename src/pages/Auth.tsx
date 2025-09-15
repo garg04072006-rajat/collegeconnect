@@ -1,24 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Users, MessageCircle, Calendar } from "lucide-react";
+import { GraduationCap, Users, MessageCircle, Calendar, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [loginCollege, setLoginCollege] = useState("");
   const [signupCollege, setSignupCollege] = useState("");
+  const [loginCollegeError, setLoginCollegeError] = useState<string | null>(null);
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [proofUploaded, setProofUploaded] = useState(false);
+
+  // If already logged in (userCollege present) redirect to main menu
+  useEffect(() => {
+    try {
+      const existing = localStorage.getItem("userCollege");
+      if (existing && existing.trim()) {
+        window.location.replace("/main-menu");
+      }
+    } catch {}
+  }, []);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!loginCollege.trim()) {
+      setLoginCollegeError("College name is required");
+      return;
+    }
     setIsLoading(true);
     setTimeout(() => {
       try {
         localStorage.setItem("userCollege", loginCollege.trim());
+        if (loginEmail.trim()) localStorage.setItem("userEmail", loginEmail.trim());
       } catch {}
       setIsLoading(false);
       window.location.href = "/main-menu";
@@ -31,6 +54,10 @@ const Auth = () => {
     setTimeout(() => {
       try {
         localStorage.setItem("userCollege", signupCollege.trim());
+        localStorage.setItem("userName", signupName.trim());
+        localStorage.setItem("userEmail", signupEmail.trim());
+        if (signupPhone.trim()) localStorage.setItem("userPhone", signupPhone.trim());
+        if (proofUploaded) localStorage.setItem("userProof", "uploaded");
       } catch {}
       setIsLoading(false);
       window.location.href = "/main-menu";
@@ -38,7 +65,16 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute left-4 top-4"
+        onClick={() => navigate('/')} 
+        aria-label="Back"
+      >
+        <ArrowLeft className="w-5 h-5" />
+      </Button>
       <div className="w-full max-w-4xl grid lg:grid-cols-2 gap-8 items-center">
         {/* Left side - Branding */}
         <div className="hidden lg:block space-y-6">
@@ -93,6 +129,8 @@ const Auth = () => {
                       id="email"
                       type="email"
                       placeholder="your.email@college.edu"
+                      value={loginEmail}
+                      onChange={(e)=>setLoginEmail(e.target.value)}
                       required
                     />
                   </div>
@@ -103,9 +141,22 @@ const Auth = () => {
                       type="text"
                       placeholder="Enter your college name"
                       value={loginCollege}
-                      onChange={(e) => setLoginCollege(e.target.value)}
+                      onChange={(e) => {
+                        setLoginCollege(e.target.value);
+                        if (e.target.value.trim()) {
+                          setLoginCollegeError(null);
+                        }
+                      }}
+                      onBlur={() => {
+                        if (!loginCollege.trim()) {
+                          setLoginCollegeError("College name is required");
+                        }
+                      }}
                       required
                     />
+                    {loginCollegeError && (
+                      <p className="text-xs text-destructive mt-1">{loginCollegeError}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
@@ -131,7 +182,7 @@ const Auth = () => {
                     type="submit" 
                     className="w-full" 
                     variant="hero"
-                    disabled={isLoading}
+                    disabled={isLoading || !loginCollege.trim()}
                   >
                     {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
@@ -146,6 +197,8 @@ const Auth = () => {
                       id="name"
                       type="text"
                       placeholder="Your full name"
+                      value={signupName}
+                      onChange={(e)=>setSignupName(e.target.value)}
                       required
                     />
                   </div>
@@ -155,7 +208,19 @@ const Auth = () => {
                       id="signup-email"
                       type="email"
                       placeholder="your.email@college.edu"
+                      value={signupEmail}
+                      onChange={(e)=>setSignupEmail(e.target.value)}
                       required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone (Optional)</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="Your phone number"
+                      value={signupPhone}
+                      onChange={(e)=>setSignupPhone(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -176,6 +241,7 @@ const Auth = () => {
                       type="file"
                       accept="image/*,.pdf"
                       required
+                      onChange={() => setProofUploaded(true)}
                       className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                     />
                     <p className="text-xs text-muted-foreground">Upload your student ID or admission letter</p>

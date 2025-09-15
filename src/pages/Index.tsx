@@ -1,11 +1,22 @@
 // Update this page (the content is just a fallback if you fail to update the page)
 
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { GraduationCap, MessageCircle, Users, Trophy, BookOpen, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
 
 const Index = () => {
+  useEffect(() => {
+    try {
+      const existing = localStorage.getItem('userCollege');
+      if (existing && existing.trim()) {
+        // Already logged in -> go directly to main menu
+        window.location.replace('/main-menu');
+      }
+    } catch {}
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
