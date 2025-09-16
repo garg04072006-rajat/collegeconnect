@@ -1,52 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { GraduationCap, Send, ArrowLeft, Users, Hash } from "lucide-react";
+import { GraduationCap, Send, ArrowLeft, Users, Hash, Smile, Mic } from "lucide-react";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 const GeneralChat = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-
-  // Dummy messages for demo
-  const messages = [
-    {
-      id: 1,
-      user: "Rahul Sharma",
-      college: "IIT Delhi",
-      message: "Hey everyone! Anyone here for the upcoming hackathon at IIT Bombay?",
-      time: "2:30 PM",
-      avatar: "RS"
-    },
-    {
-      id: 2,
-      user: "Priya Singh",
-      college: "NIT Trichy",
-      message: "Yes! I'm planning to participate. Looking for teammates.",
-      time: "2:32 PM",
-      avatar: "PS"
-    },
-    {
-      id: 3,
-      user: "Arjun Kumar",
-      college: "IIIT Hyderabad",
-      message: "Count me in! I have experience in web development and ML.",
-      time: "2:35 PM",
-      avatar: "AK"
-    },
-    {
-      id: 4,
-      user: "Sneha Patel",
-      college: "BITS Pilani",
-      message: "Great! Let's form a team. I can handle the UI/UX part.",
-      time: "2:38 PM",
-      avatar: "SP"
-    }
-  ];
+  const [messages, setMessages] = useState([]);
 
   const onlineUsers = [
     { name: "Rahul Sharma", college: "IIT Delhi", avatar: "RS" },
@@ -57,13 +24,47 @@ const GeneralChat = () => {
     { name: "Ananya Gupta", college: "NIT Warangal", avatar: "AG" }
   ];
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim()) {
-      // Here you would send the message to Supabase
-      console.log("Sending message:", message);
-      setMessage("");
+      const msgToSend = message;
+      setMessage(""); // Clear input immediately for better UX
+      const userName = localStorage.getItem("userName") || "You";
+      const userCollege = localStorage.getItem("userCollege") || "Your College";
+      const initials = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2) || "U";
+      try {
+        await addDoc(collection(db, "generalMessages"), {
+          user: userName,
+          college: userCollege,
+          message: msgToSend,
+          avatar: initials,
+          createdAt: serverTimestamp(),
+        });
+      } catch (e) {
+        alert("Failed to send message");
+        setMessage(msgToSend); // Restore input if failed
+      }
     }
   };
+
+  useEffect(() => {
+    const q = query(collection(db, "generalMessages"), orderBy("createdAt", "asc"));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setMessages(
+        snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            user: data.user,
+            college: data.college,
+            message: data.message,
+            avatar: data.avatar,
+            time: data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"
+          };
+        })
+      );
+    });
+    return () => unsub();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -150,7 +151,7 @@ const GeneralChat = () => {
         {/* Message Input */}
         <div className="border-t p-4">
           <div className="max-w-4xl mx-auto">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Input
                 placeholder="Type your message..."
                 value={message}
@@ -158,6 +159,12 @@ const GeneralChat = () => {
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 className="flex-1"
               />
+              <Button type="button" variant="ghost" size="icon" aria-label="Emoji">
+                <Smile className="w-5 h-5" />
+              </Button>
+              <Button type="button" variant="ghost" size="icon" aria-label="Voice">
+                <Mic className="w-5 h-5" />
+              </Button>
               <Button onClick={handleSendMessage} variant="hero">
                 <Send className="w-4 h-4" />
               </Button>
