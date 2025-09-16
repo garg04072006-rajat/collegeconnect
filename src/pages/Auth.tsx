@@ -76,32 +76,40 @@ const Auth = () => {
         <ArrowLeft className="w-5 h-5" />
       </Button>
       <div className="w-full max-w-4xl grid lg:grid-cols-2 gap-8 items-center">
-        {/* Left side - Branding */}
-        <div className="hidden lg:block space-y-6">
+        {/* Left side - Branding (force dark in dark mode) */}
+  <div className="hidden lg:block space-y-6 bg-white dark:bg-[#181c24] rounded-xl p-8 shadow-lg">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <GraduationCap className="w-8 h-8 text-primary" />
-              <h1 className="text-3xl font-bold bg-hero-gradient bg-clip-text text-transparent">
-                CollegeConnect
+              <GraduationCap className="w-8 h-8 text-primary dark:text-primary" />
+              <h1 className="text-3xl font-bold bg-hero-gradient bg-clip-text text-transparent dark:bg-none dark:text-white">
+                <span className="block dark:inline text-transparent bg-hero-gradient bg-clip-text dark:bg-none dark:text-white">CollegeConnect</span>
               </h1>
             </div>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-lg text-muted-foreground dark:text-white leading-relaxed">
               Connect with students across India. Share knowledge, find opportunities, and build your network.
             </p>
           </div>
-          
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-card-gradient">
-              <Users className="w-5 h-5 text-primary" />
-              <span className="text-sm">Connect with students from IIT, NIT, and more</span>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-white bg-opacity-90 dark:bg-[#10131a] dark:bg-opacity-100 dark:text-white">
+              <Users className="w-5 h-5 text-primary dark:text-white" />
+              <span className="text-sm font-medium dark:text-white">
+                <span className="font-semibold dark:text-white">Connect with students</span>
+                <span className="dark:text-white"> from IIT, NIT, and more</span>
+              </span>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-card-gradient">
-              <MessageCircle className="w-5 h-5 text-secondary" />
-              <span className="text-sm">Join college-specific chat rooms</span>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-white bg-opacity-90 dark:bg-[#10131a] dark:bg-opacity-100 dark:text-white">
+              <MessageCircle className="w-5 h-5 text-secondary dark:text-white" />
+              <span className="text-sm font-medium dark:text-white">
+                <span className="font-semibold dark:text-white">Join college-specific</span>
+                <span className="dark:text-white"> chat rooms</span>
+              </span>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-card-gradient">
-              <Calendar className="w-5 h-5 text-accent" />
-              <span className="text-sm">Stay updated with hackathons & events</span>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-white bg-opacity-90 dark:bg-[#10131a] dark:bg-opacity-100 dark:text-white">
+              <Calendar className="w-5 h-5 text-accent dark:text-white" />
+              <span className="text-sm font-medium dark:text-white">
+                <span className="font-semibold dark:text-white">Stay updated</span>
+                <span className="dark:text-white"> with hackathons & events</span>
+              </span>
             </div>
           </div>
         </div>

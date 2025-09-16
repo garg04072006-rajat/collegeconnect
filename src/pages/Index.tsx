@@ -1,10 +1,11 @@
 // Update this page (the content is just a fallback if you fail to update the page)
 
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { GraduationCap, MessageCircle, Users, Trophy, BookOpen, ArrowRight } from "lucide-react";
+import { GraduationCap, MessageCircle, Users, Trophy, BookOpen, ArrowRight, Settings, SunMoon } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
@@ -17,9 +18,44 @@ const Index = () => {
     } catch {}
   }, []);
 
+  // Theme state: 'light' | 'dark'
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'light';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="w-full border-b bg-card/80 backdrop-blur-sm sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <GraduationCap className="w-8 h-8 text-primary" />
+            <span className="text-2xl font-bold tracking-tight bg-hero-gradient bg-clip-text text-transparent select-none">CollegeConnect</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" aria-label="Settings">
+              <Settings className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" aria-label="Theme" onClick={toggleTheme}>
+              <SunMoon className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+      </header>
+  {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-hero-gradient opacity-10" />
         <div className="relative max-w-7xl mx-auto px-4 py-24 lg:py-32">
@@ -145,25 +181,56 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-hero-gradient">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-8">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white">
-            Ready to Connect with 50,000+ Students?
-          </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Join India's most vibrant student community today. Your college network awaits!
-          </p>
-          <Button 
-            variant="secondary" 
-            size="lg"
-            className="text-lg px-8 py-6 hover:scale-105 transform transition-all duration-300"
-            onClick={() => window.location.href = "/auth"}
-          >
-            Join CollegeConnect Now <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
+      {/* Footer (Green Section) */}
+      <footer className="py-24 bg-hero-gradient">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-white text-base">
+            {/* CollegeConnect Info */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-6 h-6 text-white" />
+                <span className="font-bold text-lg">CollegeConnect</span>
+              </div>
+              <p className="max-w-xs">India's largest student networking platform. Connect, share, and grow with students across IITs, NITs, and top colleges.</p>
+            </div>
+            {/* Quick Links */}
+            <div className="space-y-2">
+              <div className="font-semibold mb-2 text-xl">Quick Links</div>
+              <ul className="space-y-1">
+                <li><a href="/auth" className="hover:underline">Login / Signup</a></li>
+                <li><a href="/main-menu" className="hover:underline">Dashboard</a></li>
+                <li><a href="/settings" className="hover:underline">Settings</a></li>
+              </ul>
+            </div>
+            {/* Categories */}
+            <div className="space-y-2">
+              <div className="font-semibold mb-2 text-xl">Categories</div>
+              <ul className="space-y-1">
+                <li><a href="/college-events" className="hover:underline">Events</a></li>
+                <li><a href="/college-hackathons" className="hover:underline">Hackathons</a></li>
+                <li><a href="/college-clubs" className="hover:underline">Clubs</a></li>
+                <li><a href="/general-chat" className="hover:underline">General Chat</a></li>
+              </ul>
+            </div>
+            {/* Support & Language */}
+            <div className="space-y-2">
+              <div className="font-semibold mb-2 text-xl">Support</div>
+              <ul className="space-y-1">
+                <li><a href="mailto:support@collegeconnect.in" className="hover:underline">Contact Support</a></li>
+                <li><a href="#" className="hover:underline">Help Center</a></li>
+              </ul>
+              <div className="mt-4">
+                <label htmlFor="lang" className="mr-2">Language:</label>
+                <select id="lang" className="rounded border px-2 py-1 bg-white text-black">
+                  <option>English</option>
+                  <option>हिंदी</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="text-center text-sm text-white/80 py-4 mt-8">&copy; {new Date().getFullYear()} CollegeConnect. All rights reserved.</div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 };

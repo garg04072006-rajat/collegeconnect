@@ -67,9 +67,9 @@ const GeneralChat = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Sidebar - Online Users */}
-      <div className="w-64 border-r bg-card/50 backdrop-blur-sm">
+      <div className="w-full md:w-64 border-b md:border-b-0 md:border-r bg-card/50 backdrop-blur-sm flex-shrink-0">
         <div className="p-4 border-b">
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
@@ -79,7 +79,7 @@ const GeneralChat = () => {
             </Badge>
           </div>
         </div>
-        <ScrollArea className="h-[calc(100vh-120px)]">
+  <ScrollArea className="h-32 md:h-[calc(100vh-120px)]">
           <div className="p-4 space-y-3">
             {onlineUsers.map((user, index) => (
               <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50">
@@ -100,47 +100,47 @@ const GeneralChat = () => {
         </ScrollArea>
       </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+  {/* Main Chat Area */}
+  <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="border-b bg-card/50 backdrop-blur-sm p-4">
-          <div className="flex items-center gap-4">
+  <header className="border-b bg-card/50 backdrop-blur-sm p-2 md:p-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate("/main-menu")}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-3">
-              <Hash className="w-6 h-6 text-primary" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <Hash className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               <div>
-                <h1 className="text-xl font-bold">General Chat</h1>
-                <p className="text-sm text-muted-foreground">All colleges discussion</p>
+                <h1 className="text-lg md:text-xl font-bold">General Chat</h1>
+                <p className="text-xs md:text-sm text-muted-foreground">All colleges discussion</p>
               </div>
             </div>
-            <div className="ml-auto flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">12,847 members</span>
+            <div className="ml-auto flex items-center gap-1 md:gap-2">
+              <GraduationCap className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
+              <span className="text-xs md:text-sm text-muted-foreground">12,847 members</span>
             </div>
           </div>
         </header>
 
         {/* Messages Area */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4 max-w-4xl mx-auto">
+        <ScrollArea className="flex-1 p-2 md:p-4">
+          <div className="space-y-3 md:space-y-4 max-w-full md:max-w-4xl mx-auto">
             {messages.map((msg) => (
-              <div key={msg.id} className="flex gap-3">
+              <div key={msg.id} className="flex gap-2 md:gap-3">
                 <Avatar>
                   <AvatarImage src="" />
                   <AvatarFallback>{msg.avatar}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm">{msg.user}</span>
-                    <Badge variant="outline" className="text-xs">
+                  <div className="flex flex-wrap items-center gap-1 md:gap-2">
+                    <span className="font-semibold text-xs md:text-sm">{msg.user}</span>
+                    <Badge variant="outline" className="text-[10px] md:text-xs">
                       {msg.college}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">{msg.time}</span>
+                    <span className="text-[10px] md:text-xs text-muted-foreground">{msg.time}</span>
                   </div>
-                  <div className="bg-accent/20 rounded-lg p-3">
-                    <p className="text-sm">{msg.message}</p>
+                  <div className="bg-accent/20 rounded-lg p-2 md:p-3">
+                    <p className="text-xs md:text-sm break-words">{msg.message}</p>
                   </div>
                 </div>
               </div>
@@ -149,27 +149,27 @@ const GeneralChat = () => {
         </ScrollArea>
 
         {/* Message Input */}
-        <div className="border-t p-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex gap-2 items-center">
+        <div className="border-t p-2 md:p-4">
+          <div className="max-w-full md:max-w-4xl mx-auto">
+            <div className="flex gap-1 md:gap-2 items-center">
               <Input
                 placeholder="Type your message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                className="flex-1"
+                className="flex-1 text-xs md:text-base px-2 md:px-3 py-2 md:py-2"
               />
               <Button type="button" variant="ghost" size="icon" aria-label="Emoji">
-                <Smile className="w-5 h-5" />
+                <Smile className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
               <Button type="button" variant="ghost" size="icon" aria-label="Voice">
-                <Mic className="w-5 h-5" />
+                <Mic className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
               <Button onClick={handleSendMessage} variant="hero">
                 <Send className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-1 md:mt-2">
               Be respectful and follow community guidelines. Messages are moderated.
             </p>
           </div>

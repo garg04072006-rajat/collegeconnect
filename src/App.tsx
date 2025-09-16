@@ -1,3 +1,6 @@
+
+
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,33 +31,47 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   return children;
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/main-menu" element={<ProtectedRoute><MainMenu /></ProtectedRoute>} />
-          <Route path="/general-chat" element={<ProtectedRoute><GeneralChat /></ProtectedRoute>} />
-          <Route path="/college-selection" element={<ProtectedRoute><CollegeSelection /></ProtectedRoute>} />
-          <Route path="/college-chat" element={<ProtectedRoute><CollegeChat /></ProtectedRoute>} />
-          <Route path="/college-clubs" element={<ProtectedRoute><CollegeClubs /></ProtectedRoute>} />
-          <Route path="/college-events" element={<ProtectedRoute><CollegeEvents /></ProtectedRoute>} />
-          <Route path="/college-hackathons" element={<ProtectedRoute><CollegeHackathons /></ProtectedRoute>} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-          <Route path="/inter-college-chat" element={<ProtectedRoute><InterCollegeChat /></ProtectedRoute>} />
-          <Route path="/intra-college-chat" element={<ProtectedRoute><IntraCollegeChat /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+
+const App = () => {
+  useEffect(() => {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
+  });
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/main-menu" element={<ProtectedRoute><MainMenu /></ProtectedRoute>} />
+            <Route path="/general-chat" element={<ProtectedRoute><GeneralChat /></ProtectedRoute>} />
+            <Route path="/college-selection" element={<ProtectedRoute><CollegeSelection /></ProtectedRoute>} />
+            <Route path="/college-chat" element={<ProtectedRoute><CollegeChat /></ProtectedRoute>} />
+            <Route path="/college-clubs" element={<ProtectedRoute><CollegeClubs /></ProtectedRoute>} />
+            <Route path="/college-events" element={<ProtectedRoute><CollegeEvents /></ProtectedRoute>} />
+            <Route path="/college-hackathons" element={<ProtectedRoute><CollegeHackathons /></ProtectedRoute>} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+            <Route path="/inter-college-chat" element={<ProtectedRoute><InterCollegeChat /></ProtectedRoute>} />
+            <Route path="/intra-college-chat" element={<ProtectedRoute><IntraCollegeChat /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
